@@ -8,7 +8,7 @@ import pandas as pd
 import datetime
 import locale
 
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 warnings.filterwarnings("ignore")
 pd.set_option('display.float_format', lambda x: '%.2f' % x) # Exibição de duas casas decimais
