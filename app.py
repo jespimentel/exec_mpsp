@@ -6,9 +6,6 @@ import xmltodict
 import warnings
 import pandas as pd
 import datetime
-import locale
-
-#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 warnings.filterwarnings("ignore")
 pd.set_option('display.float_format', lambda x: '%.2f' % x) # Exibição de duas casas decimais
@@ -206,7 +203,9 @@ def main():
     col5.plotly_chart(fig5, use_container_width=True)
 
     if st.button('Nova consulta à API'):
-       st.experimental_rerun()
+       consulta_despesas.clear()
+       consulta_despesas_dotacao.clear()
+       #st.rerun()
 
     return
 
