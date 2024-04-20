@@ -80,6 +80,8 @@ def consulta_despesas_dotacao(orgao, ano):
   # Verifica o status da requisição
   if response.status_code == 200:
       print(f"Requisição para ano {ano}: Cód. {response.status_code}")
+      data_atual = datetime.datetime.now()
+      st.text(f"Consulta à api da SEFAZ em: {data_atual}")
   else:
       print(f"Erro na requisição para o ano {ano}: {response.status_code}")
 
@@ -111,7 +113,7 @@ def main():
     ano = data_atual.year
     st.title("Execução orçamentária do MPSP")
     st.subheader('Pimentel - 2024')
-    st.text(f"Data/hora atual: {data_atual}")
+    #st.text(f"Data/hora atual: {data_atual}")
 
     despesas = consulta_despesas(orgao, str(ano))
     dados_despesas = xmltodict.parse(despesas)
