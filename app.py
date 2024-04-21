@@ -42,7 +42,7 @@ def consulta_despesas(orgao, ano):
   # Verifica o status da requisição
   if response.status_code == 200:
       st.text(f"Requisição para Despesa do ano {ano}: Cód. {response.status_code}")
-      data_atual = datetime.datetime.now()
+      data_atual = datetime.datetime.now(datetime.UTC)
       st.text(f"Consulta à api Despesa da SEFAZ em: {data_atual} (UTC)")
   else:
       print(f"Erro na requisição para o ano {ano}: {response.status_code}")
@@ -82,7 +82,7 @@ def consulta_despesas_dotacao(orgao, ano):
   # Verifica o status da requisição
   if response.status_code == 200:
       st.text(f"Requisição para Dotação do ano {ano}: Cód. {response.status_code}")
-      data_atual = datetime.datetime.now()
+      data_atual = datetime.datetime.now(datetime.UTC)
       st.text(f"Consulta à api Dotação da SEFAZ em: {data_atual} (UTC)")
   else:
       st.text(f"Erro na requisição para Dotação do ano {ano}: {response.status_code}")
