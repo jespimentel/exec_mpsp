@@ -143,6 +143,7 @@ def main():
     df_despesas = df_despesas[['CodigoElemento', 'CodigoNomeFonteRecursos','CodigoNomeTipoLicitacao', 'CgcCpfFavorecido', 
                             'NaturezaDespesaNomeItem', 'ValorEmpenhado','ValorLiquidado', 'ValorPago', 
                             'ValorPagoAnosAnteriores']]
+    df_despesas['PgTotal'] = df_despesas['ValorPago'] + df_despesas['ValorPagoAnosAnteriores']
 
     df_dotacao = df_dotacao[['CodigoElemento', 'CodigoNomeElemento', 'ValorDotacaoInicial', 'ValorDotacaoAtual', 
                             'ValorEmpenhado', 'ValorLiquidado', 'ValorPago', 'ValorPagoAnosAnteriores']]
@@ -177,6 +178,7 @@ def main():
     col1, col2 = st.columns(2)
     col3, col4 = st.columns(2)
     col5 = st.empty() # Não cria o container
+    col6 = st.empty() # Não cria o container
 
     # Gráfico pizza - Quanto do ano já passou
     valores = quanto_ja_passou_do_ano(data_atual, ano) 
@@ -194,7 +196,6 @@ def main():
     dot_ini = df_dotacao_filtrado['ValorDotacaoInicial'].iloc[0]
     dot_atual = df_dotacao_filtrado['ValorDotacaoAtual'].iloc[0]
     pg_total = df_dotacao_filtrado['Pago total'].iloc[0]
-    print(dot_ini)
     grupos = ['Dotação inicial', 'Dotação atual', 'Pago + Anos anteriores']
     valores = [dot_ini, dot_atual, pg_total]
     fig_3 = px.bar(x=grupos, y=valores, title='Valores relativos ao elemento')
@@ -210,6 +211,12 @@ def main():
     fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
     col5.plotly_chart(fig5, use_container_width=True)
 
+    fig6 = px.sunburst(df_despesas, 
+                    path=['CodigoElemento', 'NaturezaDespesaNomeItem','CgcCpfFavorecido'], 
+                    values='PgTotal', 
+                    color_continuous_scale='Blues')
+    col6.plotly_chart(fig6, use_container_width=True)
+  
     return
 
 if __name__ == "__main__":
