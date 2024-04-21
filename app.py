@@ -162,7 +162,7 @@ def main():
     elemento = st.sidebar.selectbox("Elemento", df_dotacao['CodigoNomeElemento'].unique(), index=len(df_dotacao) - 1)
     df_dotacao_filtrado = df_dotacao[df_dotacao['CodigoNomeElemento'] == elemento]
 
-    # 
+    # Botão no sidebar
     if st.sidebar.button("Renovar consulta à API"):
       consulta_despesas.clear()
       consulta_despesas_dotacao.clear()
