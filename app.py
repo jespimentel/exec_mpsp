@@ -162,6 +162,11 @@ def main():
     elemento = st.sidebar.selectbox("Elemento", df_dotacao['CodigoNomeElemento'].unique(), index=len(df_dotacao) - 1)
     df_dotacao_filtrado = df_dotacao[df_dotacao['CodigoNomeElemento'] == elemento]
 
+    # 
+    if st.sidebar.button("Renovar consulta à API"):
+      consulta_despesas.clear()
+      consulta_despesas_dotacao.clear()
+
     # Filtra o dataframe de despesas 
     df_despesas_filtrado = pd.merge(df_dotacao_filtrado, df_despesas, on='CodigoElemento', how='inner')
 
@@ -204,10 +209,6 @@ def main():
     # Gráfico de barras - Exibe os beneficiários
     fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
     col5.plotly_chart(fig5, use_container_width=True)
-
-    if st.button('Nova consulta à API'):
-       consulta_despesas.clear()
-       consulta_despesas_dotacao.clear()
 
     return
 
