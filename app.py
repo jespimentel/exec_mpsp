@@ -107,7 +107,7 @@ def quanto_ja_passou_do_ano(data_atual, ano):
       total_dias_no_ano = 365
     
     dias_passados = (data_atual - datetime.datetime(ano, 1, 1)).days + 1   
-    return dias_passados, total_dias_no_ano
+    return dias_passados, total_dias_no_ano - dias_passados
 
 def main():
     orgao = '27000'
@@ -180,43 +180,45 @@ def main():
     col5 = st.empty() # Não cria o container
     col6 = st.empty() # Não cria o container
 
-    # Gráfico pizza - Quanto do ano já passou
-    valores = quanto_ja_passou_do_ano(data_atual, ano) 
-    categorias = ['Já passou', 'Ainda faltam']
-    fig_1 = px.pie(values=valores, names=categorias, title='Quanto do ano já passou')
-    col1.plotly_chart(fig_1, use_container_width=True)
+    if elemento == 'TOTAL':
+      # Gráfico pizza - Quanto do ano já passou
+      valores = quanto_ja_passou_do_ano(data_atual, ano) 
+      categorias = ['Já passou', 'Ainda faltam']
+      fig_1 = px.pie(values=valores, names=categorias, title='Quanto do ano já passou')
+      col1.plotly_chart(fig_1, use_container_width=True)
 
-    # Gráfico pizza - Quanto do orçamento atual já foi pago
-    valores = [pago_total, dotacao_atual] 
-    categorias = ['Pago total', 'Dotação atual']
-    fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago)')
-    col2.plotly_chart(fig_2,use_container_width=True)
+      # Gráfico pizza - Quanto do orçamento atual já foi pago
+      valores = [pago_total, dotacao_atual] 
+      categorias = ['Pago total', 'Dotação atual']
+      fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago)')
+      col2.plotly_chart(fig_2,use_container_width=True)
 
-    # Gráfico de barras - com valores filtrados
-    dot_ini = df_dotacao_filtrado['ValorDotacaoInicial'].iloc[0]
-    dot_atual = df_dotacao_filtrado['ValorDotacaoAtual'].iloc[0]
-    pg_total = df_dotacao_filtrado['Pago total'].iloc[0]
-    grupos = ['Dotação inicial', 'Dotação atual', 'Pago + Anos anteriores']
-    valores = [dot_ini, dot_atual, pg_total]
-    fig_3 = px.bar(x=grupos, y=valores, title='Valores relativos ao elemento')
-    col3.plotly_chart(fig_3, use_container_width=True)
+    else:
+      # Gráfico de barras - com valores filtrados
+      dot_ini = df_dotacao_filtrado['ValorDotacaoInicial'].iloc[0]
+      dot_atual = df_dotacao_filtrado['ValorDotacaoAtual'].iloc[0]
+      pg_total = df_dotacao_filtrado['Pago total'].iloc[0]
+      grupos = ['Dotação inicial', 'Dotação atual', 'Pago + Anos anteriores']
+      valores = [dot_ini, dot_atual, pg_total]
+      fig_3 = px.bar(x=grupos, y=valores, title='Valores relativos ao elemento')
+      col3.plotly_chart(fig_3, use_container_width=True)
 
-    # Gráfico pizza - Quanto já foi pago (elemento selecionado)
-    valores = [dot_atual-pg_total, pg_total]
-    categorias = ['Sobra da dotação atual', 'Pagamento total']
-    fig_4 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago) desse elemento')
-    col4.plotly_chart(fig_4,use_container_width=True)
+      # Gráfico pizza - Quanto já foi pago (elemento selecionado)
+      valores = [dot_atual-pg_total, pg_total]
+      categorias = ['Sobra da dotação atual', 'Pagamento total']
+      fig_4 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago) desse elemento')
+      col4.plotly_chart(fig_4,use_container_width=True)
 
-    # Gráfico de barras - Exibe os beneficiários
-    fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
-    col5.plotly_chart(fig5, use_container_width=True)
-
-    fig6 = px.sunburst(df_despesas, 
-                    path=['CodigoElemento', 'NaturezaDespesaNomeItem','CgcCpfFavorecido'], 
-                    values='PgTotal', 
-                    color_continuous_scale='Blues')
-    col6.plotly_chart(fig6, use_container_width=True)
-  
+      # Gráfico de barras - Exibe os beneficiários
+      fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
+      col5.plotly_chart(fig5, use_container_width=True)
+      
+      # Gráfico sunburst
+      fig6 = px.sunburst(df_despesas_filtrado, 
+                      path=['NaturezaDespesaNomeItem','CgcCpfFavorecido'], 
+                      values='Pg Total', 
+                      color_continuous_scale='Blues')
+      col6.plotly_chart(fig6, use_container_width=True) 
     return
 
 if __name__ == "__main__":
