@@ -8,7 +8,7 @@ import pandas as pd
 import datetime
 
 warnings.filterwarnings("ignore")
-#pd.set_option('display.float_format', lambda x: '%.2f' % x) # Duas casas decimais no Jupyter
+# pd.set_option('display.float_format', lambda x: '%.2f' % x) # Duas casas decimais no Jupyter
 
 # Funções
 @st.cache_data
@@ -188,10 +188,12 @@ def main():
       col1.plotly_chart(fig_1, use_container_width=True)
 
       # Gráfico pizza - Quanto do orçamento atual já foi pago
-      valores = [pago_total, dotacao_atual] 
+      valores = [pago_total, dotacao_atual - pago_total] 
       categorias = ['Pago total', 'Dotação atual']
       fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago)')
       col2.plotly_chart(fig_2,use_container_width=True)
+
+      st.dataframe(df_dotacao[['CodigoNomeElemento', 'ValorDotacaoAtual', 'Pago total', '% da Dot. Atual (Elemento)']])
 
     else:
       # Gráfico de barras - com valores filtrados
@@ -210,7 +212,8 @@ def main():
       col4.plotly_chart(fig_4,use_container_width=True)
 
       # Gráfico de barras - Exibe os beneficiários
-      fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
+      #fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
+      fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido')
       col5.plotly_chart(fig5, use_container_width=True)
       
       # Gráfico sunburst
