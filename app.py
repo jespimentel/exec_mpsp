@@ -8,7 +8,7 @@ import pandas as pd
 import datetime
 
 warnings.filterwarnings("ignore")
-pd.set_option('display.float_format', lambda x: '%.2f' % x) # Exibição de duas casas decimais
+#pd.set_option('display.float_format', lambda x: '%.2f' % x) # Duas casas decimais no Jupyter
 
 # Funções
 @st.cache_data
