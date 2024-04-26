@@ -8,7 +8,6 @@ import pandas as pd
 import datetime
 
 warnings.filterwarnings("ignore")
-# pd.set_option('display.float_format', lambda x: '%.2f' % x) # Duas casas decimais no Jupyter
 
 # Funções
 @st.cache_data
@@ -156,6 +155,7 @@ def main():
     df_dotacao['% da Dot. Inicial (Elemento)'] = df_dotacao['Pago total']/df_dotacao['ValorDotacaoInicial'] * 100
     df_dotacao['% da Dot. Atual'] = df_dotacao['Pago total']/dotacao_atual * 100
     df_dotacao['% da Dot. Atual (Elemento)'] = df_dotacao['Pago total']/df_dotacao['ValorDotacaoAtual'] * 100
+    df_dotacao['% da Dot. Inicial (Geral)'] = df_dotacao['ValorDotacaoInicial']/dotacao_inicial_total * 100
 
     pago_total = df_dotacao.iloc[-1]['Pago total']
 
@@ -182,18 +182,21 @@ def main():
 
     if elemento == 'TOTAL':
       # Gráfico pizza - Quanto do ano já passou
-      valores = quanto_ja_passou_do_ano(data_atual, ano) 
-      categorias = ['Já passou', 'Ainda faltam']
+      valores = quanto_ja_passou_do_ano(data_atual, ano)
+      categorias = ['Dias já passados no ano', 'Dias faltantes no ano']
       fig_1 = px.pie(values=valores, names=categorias, title='Quanto do ano já passou')
       col1.plotly_chart(fig_1, use_container_width=True)
 
       # Gráfico pizza - Quanto do orçamento atual já foi pago
-      valores = [pago_total, dotacao_atual - pago_total] 
-      categorias = ['Pago total', 'Dotação atual']
-      fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi executado (pago)')
+      valores = [pago_total, dotacao_atual - pago_total]
+      categorias = ['Pago total', 'Sobra da dotação atual']
+      fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi pago')
       col2.plotly_chart(fig_2,use_container_width=True)
-
-      st.dataframe(df_dotacao[['CodigoNomeElemento', 'ValorDotacaoAtual', 'Pago total', '% da Dot. Atual (Elemento)']])
+      
+      df_dotacao_formatado = pd.io.formats.style.Styler(df_dotacao[['CodigoNomeElemento', 'ValorDotacaoAtual', 'Pago total', 
+                                                                    '% da Dot. Atual (Elemento)', '% da Dot. Inicial (Geral)']], 
+                                                                    precision=2, decimal=',', thousands='.')
+      st.dataframe(df_dotacao_formatado)
 
     else:
       # Gráfico de barras - com valores filtrados
@@ -203,6 +206,7 @@ def main():
       grupos = ['Dotação inicial', 'Dotação atual', 'Pago + Anos anteriores']
       valores = [dot_ini, dot_atual, pg_total]
       fig_3 = px.bar(x=grupos, y=valores, title='Valores relativos ao elemento')
+      fig_3.update_layout(yaxis=dict(tickformat=".2f"))
       col3.plotly_chart(fig_3, use_container_width=True)
 
       # Gráfico pizza - Quanto já foi pago (elemento selecionado)
@@ -212,16 +216,16 @@ def main():
       col4.plotly_chart(fig_4,use_container_width=True)
 
       # Gráfico de barras - Exibe os beneficiários
-      #fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido', barmode='group')
-      fig5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido')
-      col5.plotly_chart(fig5, use_container_width=True)
+      fig_5 = px.bar(df_despesas_filtrado, x='NaturezaDespesaNomeItem', y='Pg Total', color='CgcCpfFavorecido')
+      fig_5.update_layout(yaxis=dict(tickformat=".2f"))
+      col5.plotly_chart(fig_5, use_container_width=True)
       
       # Gráfico sunburst
-      fig6 = px.sunburst(df_despesas_filtrado, 
-                      path=['NaturezaDespesaNomeItem','CgcCpfFavorecido'], 
+      fig_6 = px.sunburst(df_despesas_filtrado, 
+                      path=['CodigoElemento', 'NaturezaDespesaNomeItem','CgcCpfFavorecido'], 
                       values='Pg Total', 
                       color_continuous_scale='Blues')
-      col6.plotly_chart(fig6, use_container_width=True) 
+      col6.plotly_chart(fig_6, use_container_width=True) 
     return
 
 if __name__ == "__main__":
