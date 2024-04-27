@@ -109,12 +109,26 @@ def quanto_ja_passou_do_ano(data_atual, ano):
     return dias_passados, total_dias_no_ano - dias_passados
 
 def main():
-    orgao = '27000'
     data_atual = datetime.datetime.now()
     ano = data_atual.year
-    st.title("Execução orçamentária do MPSP")
-    st.subheader('Pimentel - 2024')
 
+    st.sidebar.text ('Pimentel - 2024')
+
+    orgaos = {
+       "MPSP": "27000",
+       "DPSP": "42000",
+       "TJSP": "03000",
+       "PGE": "40000"
+    }
+
+    opcao_orgao = st.sidebar.selectbox(
+    "Selecione o órgão",
+    ('MPSP', 'DPSP', 'TJSP', 'PGE'),
+    index = 0
+    )
+    orgao = orgaos[opcao_orgao]
+    st.title(f"Execução orçamentária do(a) {opcao_orgao} | Ano: {ano}")
+    
     despesas = consulta_despesas(orgao, str(ano))
     dados_despesas = xmltodict.parse(despesas)
     despesas = dados_despesas['soap:Envelope']['soap:Body']['ConsultarDespesasResponse']['ConsultarDespesasResult']['ListaItensDespesa']['ItemDespesa']
@@ -158,11 +172,11 @@ def main():
     df_dotacao['% da Dot. Inicial (Geral)'] = df_dotacao['ValorDotacaoInicial']/dotacao_inicial_total * 100
 
     pago_total = df_dotacao.iloc[-1]['Pago total']
-
+    
     # Filtra o dataframe
     elemento = st.sidebar.selectbox("Elemento", df_dotacao['CodigoNomeElemento'].unique(), index=len(df_dotacao) - 1)
     df_dotacao_filtrado = df_dotacao[df_dotacao['CodigoNomeElemento'] == elemento]
-
+    
     # Botão no sidebar
     if st.sidebar.button("Renovar consulta à API"):
       consulta_despesas.clear()
@@ -193,10 +207,8 @@ def main():
       fig_2 = px.pie(values=valores, names=categorias, title='Quanto já foi pago')
       col2.plotly_chart(fig_2,use_container_width=True)
       
-      df_dotacao_formatado = pd.io.formats.style.Styler(df_dotacao[['CodigoNomeElemento', 'ValorDotacaoAtual', 'Pago total', 
-                                                                    '% da Dot. Atual (Elemento)', '% da Dot. Inicial (Geral)']], 
-                                                                    precision=2, decimal=',', thousands='.')
-      st.dataframe(df_dotacao_formatado)
+      st.dataframe(df_dotacao[['CodigoNomeElemento', 'ValorDotacaoInicial', 'ValorDotacaoAtual', 
+                               'Pago total','% da Dot. Atual (Elemento)','% da Dot. Inicial (Geral)']])
 
     else:
       # Gráfico de barras - com valores filtrados
