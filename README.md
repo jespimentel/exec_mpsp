@@ -1,4 +1,4 @@
-# Execução orçamentária do MPSP em tempo real
+# Execução orçamentária em tempo real
 ### José Eduardo de Souza Pimentel (criado em: 20 abr. 2024)
 
 ## Visão geral
