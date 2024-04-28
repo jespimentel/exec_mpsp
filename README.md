@@ -1,8 +1,8 @@
-# Execução orçamentária em tempo real
+# Execução orçamentária dos órgãos da justiça de São Paulo
 ### José Eduardo de Souza Pimentel (criado em: 20 abr. 2024)
 
 ## Visão geral
-O programa utiliza Python e Streamlit, principalmente, para criar uma interface web interativa para visualização dos dados da execução orçamentária do Ministério Público de São Paulo (MPSP), com possibilidade de consultas as APIs da SEFAZ para a obtenção das informações correntes do SIGEO.
+O programa utiliza Python e Streamlit, principalmente, para criar uma interface web interativa para visualização dos dados da execução orçamentária do Ministério Público de São Paulo (MPSP), do Tribunal de Justiça do Estado de São Paulo (TJSP), da Defensoria Pública do Estado de São Paulo (DPSP) e da Procuradoria-Geral do Estado de São Paulo (PGE), com possibilidade de consultas as APIs da SEFAZ para a obtenção das informações correntes do SIGEO.
 
 ## Estratégias da aplicação
 
